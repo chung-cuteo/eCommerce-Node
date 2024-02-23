@@ -6,6 +6,7 @@ const server = app.listen(POST, () => {
   console.log(`running eCommerce with ${POST}`);
 });
 
-process.on("SIGINT", () => {
-  server.close(() => console.log("Exit server"));
-});
+// process.on("SIGINT", () => {
+//   server.close(() => console.log("Exit server"));
+//   // notify.send() // report for team
+// });
