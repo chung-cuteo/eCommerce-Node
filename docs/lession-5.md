@@ -1,7 +1,7 @@
 ## Api Sign-up Shop
 
 1 sign up shop
-2 JWT voiws rsa
+2 JWT voi rsa
 3 JWT
 
 Triển khai tính năng đăng ký một shop mới và tìm hiểu cách save token với thuật toán RSA

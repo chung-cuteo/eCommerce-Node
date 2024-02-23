@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 
 //init db
 require("./databases/init.mongodb");
-checkOverload();
+// checkOverload();
 
 //init router
 app.use(router);

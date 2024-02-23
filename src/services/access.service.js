@@ -31,7 +31,8 @@ class AccessService {
           message: "create hash wrong",
         };
       }
-
+      
+      // tao 1 shop 
       const newShop = await shopModel.create({
         name,
         email,
@@ -41,9 +42,10 @@ class AccessService {
 
       if (newShop) {
         // tao privateKey , publicKey
-        const publicKey = crypto.randomBytes(64).toString('hex')
-        const privateKey = crypto.randomBytes(64).toString('hex')
+        const publicKey = crypto.randomBytes(64).toString("hex");
+        const privateKey = crypto.randomBytes(64).toString("hex");
 
+        // update  privateKey , publicKey token vao db
         const keyStore = await KeyTokenService.createKeyToken({
           userID: newShop._id,
           publicKey,
