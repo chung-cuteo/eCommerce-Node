@@ -3,7 +3,7 @@
 ### signup
 POST {{url_dev}}/shop/signup
 Content-Type: application/json
-x-api-key: 8276b98518073a864b6c012fcacfc83aee271f4d151c507e4d3da16439675f21c263816b0548b887973a8656a04db12bb095cab2e492e8bc5627dd49d3813965
+x-api-key: 92eab03ce23560488762ded0a1a8ca4ef45ef51f0fce91f45711db662b7a7616307665c4a679b4ecc57b6df7c174817e0546cded7ec077bbfb5c3eee552a52a5
 
 {
   "name": "Shop Day",
