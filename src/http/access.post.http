@@ -6,7 +6,7 @@ Content-Type: application/json
 x-api-key: 92eab03ce23560488762ded0a1a8ca4ef45ef51f0fce91f45711db662b7a7616307665c4a679b4ecc57b6df7c174817e0546cded7ec077bbfb5c3eee552a52a5
 
 {
-  "name": "Shop Day",
-  "email": "shopday@gmail.com",
-  "password": "abc123"
+  "name": "Chung2",
+  "email": "chung2@gmail.com",
+  "password": "12345"
 }
