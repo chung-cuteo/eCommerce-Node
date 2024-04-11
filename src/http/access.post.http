@@ -1,12 +1,33 @@
 @url_dev=http://localhost:3055/v1/api
+@contentType=application/json
+@APIKey=92eab03ce23560488762ded0a1a8ca4ef45ef51f0fce91f45711db662b7a7616307665c4a679b4ecc57b6df7c174817e0546cded7ec077bbfb5c3eee552a52a5
+@token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiI2NjE2NmY0MTVjNGZiNWE0NGU4Y2MyM2YiLCJlbWFpbCI6ImNodW5nQGdtYWlsLmNvbSIsImlhdCI6MTcxMjgwNDM3MSwiZXhwIjoxNzEyOTc3MTcxfQ.dSuuYAV5Uj5x7a_Njb0GFniuySlo9miA17MLBrCh1j-CxF-ByCM9BTnNNpZThW5cpq0o0y6dRfqpdrmgVe3i1opidomo8Lev1GuMNod9r7Z64_ASrmeMmI5fn3RAD6mEiiRas_5U7Q0sHPx5tAzNWtqVmboeNcecniVZGkjQcVYc2_4M1Wa1kzmoYVUj4g4Ofqp3Noo12icAPlo4wX1IryOLFZ3VOC8kXvaLGj_sydF0hllKns8LMtyosTYlq74ox1Ff7qX8FouKMI7Ove_-3tBB5tUHu-VolxhXVtNOto8HGZml9de9SBB-_bAY49d0i9CMPuVziZ56-POiLerihQ
 
 ### signup
 POST {{url_dev}}/shop/signup
-Content-Type: application/json
-x-api-key: 92eab03ce23560488762ded0a1a8ca4ef45ef51f0fce91f45711db662b7a7616307665c4a679b4ecc57b6df7c174817e0546cded7ec077bbfb5c3eee552a52a5
+Content-Type: {{contentType}}
+x-api-key: {{APIKey}}
 
 {
-  "name": "Chung2",
-  "email": "chung2@gmail.com",
+  "name": "Chung",
+  "email": "chung@gmail.com",
   "password": "12345"
 }
+
+### login
+POST {{url_dev}}/shop/login
+Content-Type: {{contentType}}
+x-api-key: {{APIKey}}
+
+{
+  "email": "chung@gmail.com",
+  "password": "12345"
+}
+
+### logout
+POST {{url_dev}}/shop/logout
+Content-Type: {{contentType}}
+Authorization: {{token}}
+x-api-key: {{APIKey}}
+x-client-id: 66166f415c4fb5a44e8cc23f
+

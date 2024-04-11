@@ -2,7 +2,7 @@
 const { model, Schema } = require("mongoose");
 
 const DOCUMENT_NAME = "Shop";
-const COLECTION_NAME = "Shops";
+const COLLECTION_NAME = "Shops";
 
 const shopSchema = new Schema({
   name: {
@@ -24,7 +24,7 @@ const shopSchema = new Schema({
     enum: ['active', 'inactive'],
     default: 'inactive'
   },
-  vertify: {
+  verify: {
     type: Schema.Types.Boolean,
     default: true
   },
@@ -34,7 +34,7 @@ const shopSchema = new Schema({
   },
 }, {
   timestamps: true,
-  collection: COLECTION_NAME
+  collection: COLLECTION_NAME
 });
 
 module.exports = model(DOCUMENT_NAME, shopSchema);

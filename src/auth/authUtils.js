@@ -1,24 +1,19 @@
 "use strict";
 const JWT = require("jsonwebtoken");
+const crypto = require("node:crypto");
 
-const createTokenPair = async (payload, publicKey, privateKey) => {
+const createTokenPair = ({ payload, publicKey, privateKey }) => {
   try {
     // access token
-    const accessToken = await JWT.sign(payload, privateKey, {
+    const accessToken = JWT.sign(payload, privateKey, {
       expiresIn: "2 days",
+      algorithm: "RS256",
     });
 
-    const refreshToken = await JWT.sign(payload, privateKey, {
+    // refreshToken
+    const refreshToken = JWT.sign(payload, privateKey, {
       expiresIn: "7 days",
-    });
-
-    // verify
-    JWT.verify(accessToken, publicKey, (error, decode) => {
-      if (error) {
-        console.error("error verify");
-      } else {
-        console.log("decode", decode);
-      }
+      algorithm: "RS256",
     });
 
     return { accessToken, refreshToken };
@@ -27,6 +22,22 @@ const createTokenPair = async (payload, publicKey, privateKey) => {
   }
 };
 
+const createCryptoKey = () => {
+  const { privateKey, publicKey } = crypto.generateKeyPairSync("rsa", {
+    modulusLength: 2048, 
+    publicKeyEncoding: {
+      type: "pkcs1", 
+      format: "pem", 
+    },
+    privateKeyEncoding: {
+      type: "pkcs1", 
+      format: "pem", 
+    },
+  });
+  return { publicKey, privateKey };
+};
+
 module.exports = {
   createTokenPair,
+  createCryptoKey,
 };

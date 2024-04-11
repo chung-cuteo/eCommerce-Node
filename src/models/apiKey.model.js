@@ -3,7 +3,7 @@
 const { model, Schema } = require("mongoose");
 
 const DOCUMENT_NAME = "Apikey";
-const COLECTION_NAME = "Apikeys";
+const COLLECTION_NAME = "Apikeys";
 
 const apiKeySchema = new Schema({
   key: {
@@ -22,7 +22,7 @@ const apiKeySchema = new Schema({
   },
 }, {
   timestamps: true,
-  collection: COLECTION_NAME
+  collection: COLLECTION_NAME
 });
 
 module.exports = model(DOCUMENT_NAME, apiKeySchema);

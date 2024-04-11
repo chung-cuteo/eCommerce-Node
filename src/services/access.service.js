@@ -1,76 +1,110 @@
-const shopModel = require("../models/shop.model");
+const ShopModel = require("../models/shop.model");
 const bcrypt = require("bcrypt");
-const crypto = require("node:crypto");
-const { createTokenPair } = require("../auth/authUtils");
 const KeyTokenService = require("./keyToken.service");
+const { BadRequestError, AuthFailureError } = require("../core/error.response");
+const { createTokenPair, createCryptoKey } = require("../auth/authUtils");
 const { getInfoData } = require("../utils");
-const { BadResquestError } = require("../core/error.response");
-
-const RoleShop = {
-  SHOP: "SHOP",
-  WRITE: "WRITE",
-  EDITOR: "EDITOR",
-  ADMIN: "ADMIN",
-};
+const { findShopByEmail } = require("./shop.service");
+const { ROLES_SHOP } = require("../constant/index");
 
 class AccessService {
-  static async signup({ name, email, password }) {
-    // step 1: check exit emall
-    const holdelShop = await shopModel.findOne({ email }).lean();
-    if (holdelShop) {
-      throw new BadResquestError("Error: Shop already registered !");
-    }
+  static async logout(keyStore) {
+    const removeKey = await KeyTokenService.removeKeyByID(keyStore._id);
+    return removeKey;
+  }
 
-    const passwordHash = await bcrypt.hash(password, 10);
-    if (!passwordHash) {
-      throw new BadResquestError("Error: Password invalid !");
+  /*
+  1- check email in db
+  2- match password
+  3- create access token vs refresh token
+  4- general token
+  5- get data return login
+  */
+  static async login({ email, password, refreshToken = null }) {
+    //1.
+    const foundShop = await findShopByEmail({ email });
+    if (!foundShop) throw new BadRequestError("Shop not register");
+    // 2.
+    const isCheckPassword = bcrypt.compare(password, foundShop.password);
+    if (!isCheckPassword) throw new AuthFailureError("Authentication error");
+
+    //3.access token vs refresh token by publickey and private key
+    const { publicKey, privateKey } = createCryptoKey();
+
+    // 4
+    const { _id: userID } = foundShop;
+    const tokens = await createTokenPair({
+      payload: {
+        userID,
+        email,
+      },
+      publicKey,
+      privateKey,
+    });
+
+    // add refreshToken and privateKey , publicKey token vao db
+    const createdKeyToken = await KeyTokenService.createKeyToken({
+      privateKey,
+      publicKey,
+      refreshToken: tokens.refreshToken,
+      userID,
+    });
+
+    if (!createdKeyToken) throw new BadRequestError("Can not save token");
+
+    return {
+      shop: getInfoData({
+        fields: ["_id", "name", "email"],
+        object: foundShop,
+      }),
+      tokens,
+    };
+  }
+
+  static async signup({ name, email, password }) {
+    // step 1: check exit email
+    const holderShop = await ShopModel.findOne({ email }).lean();
+    if (holderShop) {
+      throw new BadRequestError("Error: Shop already registered !");
     }
 
     // tao 1 shop
-    const newShop = await shopModel.create({
+    const newShop = await ShopModel.create({
       name,
       email,
-      password: passwordHash,
-      roles: [RoleShop.SHOP],
+      password: await bcrypt.hash(password, 10),
+      roles: [ROLES_SHOP.SHOP],
+    });
+    if (!newShop) return null;
+
+    // tao privateKey , publicKey
+    const { publicKey, privateKey } = createCryptoKey();
+
+    // add privateKey , publicKey token vao db
+    const createdKeyToken = await KeyTokenService.createKeyToken({
+      userID: newShop._id,
+      publicKey,
+      privateKey,
     });
 
-    if (newShop) {
-      // tao privateKey , publicKey
-      const publicKey = crypto.randomBytes(64).toString("hex");
-      const privateKey = crypto.randomBytes(64).toString("hex");
+    if (!createdKeyToken) throw new BadRequestError("Can not save token");
 
-      // update  privateKey , publicKey token vao db
-      const keyStore = await KeyTokenService.createKeyToken({
+    // tao token pair
+    const tokens = await createTokenPair({
+      payload: {
         userID: newShop._id,
-        publicKey,
-        privateKey,
-      });
-
-      if (!keyStore) {
-        throw new BadResquestError("Error: Token invalid !");
-      }
-
-      // tao token pair
-      const tokens = await createTokenPair(
-        {
-          userID: newShop._id,
-          email,
-        },
-        publicKey,
-        privateKey
-      );
-
-      return {
-        shop: getInfoData({
-          fields: ["_id", "name", "email"],
-          object: newShop,
-        }),
-        tokens,
-      };
-    }
+        email,
+      },
+      publicKey,
+      privateKey,
+    });
 
     return {
-      metadata: null,
+      shop: getInfoData({
+        fields: ["_id", "name", "email"],
+        object: newShop,
+      }),
+      tokens,
     };
   }
 }
