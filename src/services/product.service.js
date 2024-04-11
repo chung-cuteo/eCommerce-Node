@@ -9,17 +9,17 @@ const { BadRequestError } = require("../core/error.response");
 
 // define factory class Product
 class ProductFactory {
-  static async createProduct(type, payload) {
-    switch (type) {
-      case "Clothing":
-        return new Clothing(payload);
-        
-        case "Electronic":
-        return new Electronic(payload);
+  static productsRegister = {};
 
-      default:
-        throw new BadRequestError("Invalid product Types");
-    }
+  static registerProductType(type, classRef) {
+    ProductFactory.productsRegister[type] = classRef;
+  }
+
+  static async createProduct(type, payload) {
+    const productClass = ProductFactory.productsRegister[type];
+    if (!productClass) throw new BadRequestError("Invalid product Types");
+
+    return new productClass(payload).createProduct();
   }
 }
 
@@ -30,6 +30,7 @@ class Product {
     product_thumb,
     product_description,
     product_quantity,
+    product_price,
     product_type,
     product_shop,
     product_attributes,
@@ -38,6 +39,7 @@ class Product {
     this.product_thumb = product_thumb;
     this.product_description = product_description;
     this.product_quantity = product_quantity;
+    this.product_price = product_price;
     this.product_type = product_type;
     this.product_shop = product_shop;
     this.product_attributes = product_attributes;
@@ -45,24 +47,22 @@ class Product {
 
   // create new product
   async createProduct(product_id) {
-    const newProduct = new ProductModel({
+    const newProduct = await ProductModel.create({
       ...this,
       _id: product_id,
     });
-    const createData = await newProduct.save();
-    return createData;
+    return newProduct;
   }
 }
 
 // define class Clothing
 class Clothing extends Product {
   async createProduct() {
-    const newClothing = new ClothingModel({
+    const newClothing = await ClothingModel.create({
       ...this.product_attributes,
       product_shop: this.product_shop,
     });
-    const createData = await newClothing.save();
-    if (!createData) throw new BadRequestError("Create new Clothing error");
+    if (!newClothing) throw new BadRequestError("Create new Clothing error");
 
     const newProduct = await super.createProduct(newClothing._id);
     if (!newProduct) throw new BadRequestError("Create new Clothing error");
@@ -74,13 +74,12 @@ class Clothing extends Product {
 // define class Electronic
 class Electronic extends Product {
   async createProduct() {
-    const newElectronic = ElectronicModel({
+    const newElectronic = await ElectronicModel.create({
       ...this.product_attributes,
       product_shop: this.product_shop,
     });
-    const createData = await newElectronic.save();
-    if (!createData)
-    throw new BadRequestError("Create new Electronic error");
+    if (!newElectronic)
+      throw new BadRequestError("Create new Electronic error");
 
     const newProduct = await super.createProduct(newElectronic._id);
     if (!newProduct) throw new BadRequestError("Create new Electronic error");
@@ -88,5 +87,29 @@ class Electronic extends Product {
     return newProduct;
   }
 }
+
+// define class FurnitureModel
+class FurnitureModel extends Product {
+  async createProduct() {
+    const newFurnitureModel = await FurnitureModel.create({
+      ...this.product_attributes,
+      product_shop: this.product_shop,
+    });
+    if (!newFurnitureModel)
+      throw new BadRequestError("Create new FurnitureModel error");
+
+    const newProduct = await super.createProduct(newFurnitureModel._id);
+    if (!newProduct)
+      throw new BadRequestError("Create new FurnitureModel error");
+
+    return newProduct;
+  }
+}
+
+
+// register product types
+ProductFactory.registerProductType('Clothing', Clothing )
+ProductFactory.registerProductType('Electronic', Electronic)
+ProductFactory.registerProductType('Furniture',FurnitureModel )
 
 module.exports = ProductFactory;

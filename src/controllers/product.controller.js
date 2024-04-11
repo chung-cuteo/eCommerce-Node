@@ -10,7 +10,7 @@ class ProductController {
       metadata: await ProductService.createProduct(
         req.body.product_type,
         {
-          ...res.body,
+          ...req.body,
           product_shop: req.user.userID
         }
       ),

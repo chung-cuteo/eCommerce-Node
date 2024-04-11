@@ -1,7 +1,7 @@
 @url_dev=http://localhost:3055/v1/api
 @contentType=application/json
 @APIKey=92eab03ce23560488762ded0a1a8ca4ef45ef51f0fce91f45711db662b7a7616307665c4a679b4ecc57b6df7c174817e0546cded7ec077bbfb5c3eee552a52a5
-@token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiI2NjE2NmY0MTVjNGZiNWE0NGU4Y2MyM2YiLCJlbWFpbCI6ImNodW5nQGdtYWlsLmNvbSIsImlhdCI6MTcxMjgxOTUyMSwiZXhwIjoxNzEyOTkyMzIxfQ.MndbSeaOGCHk8BYZW3aoK7G0smNM2glghVrMz9uKFekhgM-rwZ-fMtNJw4HiGoVCGhA8orTK3UibTe_UQD2D4ub9U5u6IZR-NDq_h5eGS_-9rzgBl4Ti2JUR2QJc-pU4crCgJs6iFzj5QevLeGzsqwXJFWKCWXBtwSK1KOgULk4N1OcI5dqCfzXNvqNxxRHjyGaETERDNifpLwl5xjvjjyzkOKNuSBTBQ7pQcz5dBJQNWNss14CbfGVwVk5MeQkoOmVwiGmFZ-BmEDEPhy3My3XDbunxWbPlwSx146MiiB-x1YDAn146cdQx2ONAXhxCOCXp42kyZC_vkHl6QPqKag
+@token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiI2NjE2NmY0MTVjNGZiNWE0NGU4Y2MyM2YiLCJlbWFpbCI6ImNodW5nQGdtYWlsLmNvbSIsImlhdCI6MTcxMjgzNTExNCwiZXhwIjoxNzEzMDA3OTE0fQ.HwvdAWVceHnozXpZZ_1ogV30AmZ_gapc8lXpQKAkA905vbb39U5MjJ7emNhMDkZHnCYgRVCJT9CMZMI5IOM61g3wpOgGdnSYR33wPIS3ZzDCMjnkv2hGBB-mEYzVY2twoMgnlumqht66XwBxmKM7TkUL9zuQ2DLl-ALGy6NUw_UWHc3O95mTUwOCcbCsk0KAx_ceGUVlTOGGATLEgmS_9s_Tk5HpRTJjJv47t1Zw6yzuSAIdzLVYjzbwKCu_noy6phnvjpNy7CDIIMxQPyLUGu4spMgHk0oDV19PwYfBpH7ycjjPAA1_Uw9mRBCl-JpXf3aIWvtMhtn4ygkuNyjjvg
 
 ### product/create
 POST {{url_dev}}/product/create
@@ -11,13 +11,14 @@ x-api-key: {{APIKey}}
 x-client-id: 66166f415c4fb5a44e8cc23f
 
 {
-   "product_name": "iphone 15",
-    "product_thumb": "product thumb",
-    "product_description": "product description",
+   "product_name": "Iphone",
+    "product_thumb": "Iphone thumb",
+    "product_description": "Iphone description",
     "product_quantity": 5,
+    "product_price": 1000,
     "product_type": "Electronic",
     "product_attributes": {
-      "manufacturer": "Levi s",
+      "manufacture": "LUS",
       "model": "L",
       "color": "White"
     }
