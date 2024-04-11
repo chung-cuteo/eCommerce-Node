@@ -1,13 +1,58 @@
-const ShopModel = require("../models/shop.model");
+const Shop = require("../models/shop.model");
 const bcrypt = require("bcrypt");
 const KeyTokenService = require("./keyToken.service");
-const { BadRequestError, AuthFailureError } = require("../core/error.response");
-const { createTokenPair, createCryptoKey } = require("../auth/authUtils");
+const {
+  BadRequestError,
+  AuthFailureError,
+  ForbiddenError,
+} = require("../core/error.response");
+const {
+  createTokenPair,
+  createCryptoKey,
+  verifyJWT,
+} = require("../auth/authUtils");
 const { getInfoData } = require("../utils");
 const { findShopByEmail } = require("./shop.service");
 const { ROLES_SHOP } = require("../constant/index");
 
 class AccessService {
+  static async refreshToken({ refreshToken, user, keyStore }) {
+    const { userID, email } = user;
+    const isUsedRefreshToken = keyStore.refreshTokensUsed.includes(refreshToken);
+
+    if (isUsedRefreshToken) {
+      await KeyTokenService.deleteKeyByID(userID);
+      throw new ForbiddenError("Something wrong happen !! Please re login");
+    }
+
+    if (keyStore.refreshToken !== refreshToken)
+      throw new AuthFailureError("Shop not registered");
+
+    // check exist shop
+    const foundShop = await findShopByEmail({ email });
+    if (!foundShop) throw new AuthFailureError("Shop not registered");
+
+    // create 1 cap token voi private, public key cu trong db
+    const tokens = await createTokenPair({
+      payload: { userID, email },
+      privateKey: keyStore.privateKey,
+    });
+
+    // update token
+    await KeyTokenService.updateKey(
+      { refreshToken },
+      {
+        refreshToken: tokens.refreshToken,
+        refreshTokensUsed: refreshToken,
+      }
+    );
+
+    return {
+      user,
+      tokens,
+    };
+  }
+
   static async logout(keyStore) {
     const removeKey = await KeyTokenService.removeKeyByID(keyStore._id);
     return removeKey;
@@ -28,7 +73,7 @@ class AccessService {
     const isCheckPassword = bcrypt.compare(password, foundShop.password);
     if (!isCheckPassword) throw new AuthFailureError("Authentication error");
 
-    //3.access token vs refresh token by publickey and private key
+    //3.create access token vs refresh token by publickey and private key
     const { publicKey, privateKey } = createCryptoKey();
 
     // 4
@@ -38,7 +83,6 @@ class AccessService {
         userID,
         email,
       },
-      publicKey,
       privateKey,
     });
 
@@ -95,7 +139,6 @@ class AccessService {
         userID: newShop._id,
         email,
       },
-      publicKey,
       privateKey,
     });
 

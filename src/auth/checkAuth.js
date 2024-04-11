@@ -1,6 +1,6 @@
 "use strict";
 
-const JWT = require("jsonwebtoken");
+const { verifyJWT } = require("./authUtils");
 const ApiKeyService = require("../services/apiKey.service");
 const { HEADER } = require("../constant/index");
 const asyncHandler = require("../helpers/asyncHandler");
@@ -59,25 +59,41 @@ const authentication = asyncHandler(async (req, res, next) => {
 
   //1
   const userID = req.headers[HEADER.CLIENT_ID];
+  const refreshToken = req.headers[HEADER.REFRESH_TOKEN];
+  const accessToken = req.headers[HEADER.AUTHORIZATION];
+
   if (!userID) throw new AuthFailureError("Invalid Request");
   const keyStore = await findByUserID(userID);
   if (!keyStore) throw new NotFoundError("Not found keyStore");
 
-  //2
-  const accessToken = req.headers[HEADER.AUTHORIZATION];
-  if (!accessToken) throw new AuthFailureError("Invalid Request");
+  // check refresh token when match router refresh token
 
+  if (refreshToken && req.path==="/shop/refreshToken") {
+    try {
+      const decodeUser = verifyJWT(refreshToken, keyStore.publicKey);
+      if (decodeUser.userID !== userID) {
+        throw new AuthFailureError("Unauthorized");
+      }
+      req.keyStore = keyStore;
+      req.user = decodeUser; // { userID, email}
+      req.refreshToken = refreshToken;
+      return next();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  //2
+  if (!accessToken) throw new AuthFailureError("Unauthorized");
   //3
   try {
-    const decodeUser = JWT.verify(accessToken, keyStore.publicKey, {algorithms: ['RS256']});
-    console.log(decodeUser);
-
+    const decodeUser = verifyJWT(accessToken, keyStore.publicKey);
     // 4 -5
     if (decodeUser.userID !== userID) {
-      throw new AuthFailureError("Invalid User");
+      throw new AuthFailureError("Unauthorized");
     }
     req.keyStore = keyStore;
-
+    req.user = decodeUser; // { userID, email}
     return next();
   } catch (error) {
     throw error;

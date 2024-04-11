@@ -2,7 +2,7 @@
 const JWT = require("jsonwebtoken");
 const crypto = require("node:crypto");
 
-const createTokenPair = ({ payload, publicKey, privateKey }) => {
+const createTokenPair = ({ payload, privateKey }) => {
   try {
     // access token
     const accessToken = JWT.sign(payload, privateKey, {
@@ -24,20 +24,28 @@ const createTokenPair = ({ payload, publicKey, privateKey }) => {
 
 const createCryptoKey = () => {
   const { privateKey, publicKey } = crypto.generateKeyPairSync("rsa", {
-    modulusLength: 2048, 
+    modulusLength: 2048,
     publicKeyEncoding: {
-      type: "pkcs1", 
-      format: "pem", 
+      type: "pkcs1",
+      format: "pem",
     },
     privateKeyEncoding: {
-      type: "pkcs1", 
-      format: "pem", 
+      type: "pkcs1",
+      format: "pem",
     },
   });
   return { publicKey, privateKey };
 };
 
+const verifyJWT = (token, keySecret, options = {}) => {
+  return JWT.verify(token, keySecret, {
+    algorithms: ["RS256"],
+    ...options,
+  });
+};
+
 module.exports = {
   createTokenPair,
   createCryptoKey,
+  verifyJWT,
 };
