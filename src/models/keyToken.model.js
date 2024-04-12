@@ -1,13 +1,14 @@
 "use strict";
 
 const { model, Schema } = require("mongoose");
+const ObjectId =Schema.Types.ObjectId
 
 const DOCUMENT_NAME = "KeyToken";
 const COLLECTION_NAME = "KeyTokens";
 
 const keyTokenSchema = new Schema({
   user: {
-    type: Schema.Types.ObjectId,
+    type: ObjectId,
     required: true,
     ref: 'Shop'
   },

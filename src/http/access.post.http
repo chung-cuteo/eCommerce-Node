@@ -1,10 +1,10 @@
-@url_dev=http://localhost:3055/v1/api
+@url_dev=http://localhost:3055/v1/api/auth/shop
 @contentType=application/json
 @APIKey=92eab03ce23560488762ded0a1a8ca4ef45ef51f0fce91f45711db662b7a7616307665c4a679b4ecc57b6df7c174817e0546cded7ec077bbfb5c3eee552a52a5
 @token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiI2NjE2NmY0MTVjNGZiNWE0NGU4Y2MyM2YiLCJlbWFpbCI6ImNodW5nQGdtYWlsLmNvbSIsImlhdCI6MTcxMjgxMDUyNSwiZXhwIjoxNzEyOTgzMzI1fQ.dzw5QRcQayvY-3c2peD4JtEMgAdLFNzJK-o2Eei9OhoKZpfwb77SZOKBGAaMS0CEo8IrQ3ZLNoQGF0RUFM5feom2WYinKpH8C4ur5PT0pUE5nxAqJzPnuLDqtlihE3bJD3bb_1DoQGjGcebKfAg8MQijtQr3kq40pnLOPBiMXFvnhX3fL5IXOtz0K4vFFha6kY3rrVpYFar7waj2IITlfPYtajUbWxLQL8KfrJidS_JZQHTN3CaI68TQwky8Bmr3_dcHt4zvL0efWYniR6y-e6RlfoCl1070PGG4fAdV83k_JxiuNQfCk3Dk6_SOXOER1cSt6MQ-gw7o-q5aMoFs9Q
 
 ### signup
-POST {{url_dev}}/shop/signup
+POST {{url_dev}}/signup
 Content-Type: {{contentType}}
 x-api-key: {{APIKey}}
 
@@ -15,7 +15,7 @@ x-api-key: {{APIKey}}
 }
 
 ### login
-POST {{url_dev}}/shop/login
+POST {{url_dev}}/login
 Content-Type: {{contentType}}
 x-api-key: {{APIKey}}
 
@@ -25,14 +25,14 @@ x-api-key: {{APIKey}}
 }
 
 ### logout
-POST {{url_dev}}/shop/logout
+POST {{url_dev}}/logout
 Content-Type: {{contentType}}
 Authorization: {{token}}
 x-api-key: {{APIKey}}
 x-client-id: 66166f415c4fb5a44e8cc23f
 
 ### refresh token
-POST {{url_dev}}/shop/refreshToken
+POST {{url_dev}}/refreshToken
 Content-Type: {{contentType}}
 x-api-key: {{APIKey}}
 x-client-id: 66166f415c4fb5a44e8cc23f
