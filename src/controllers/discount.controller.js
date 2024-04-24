@@ -6,7 +6,7 @@ const DiscountService = require("../services/discount.service");
 class DiscountController {
   // create
   static async createDiscountCode(req, res) {
-    new SuccessResponse({
+    new Created({
       message: "Create Discount success",
       metadata: await DiscountService.createDiscountCode({
         ...req.body,

@@ -104,6 +104,12 @@ const updateProductByID = async ({
   });
 };
 
+const getProductByID = async (productID) => {
+  return await ProductModel.findOne({
+    _id: convertToObjectIDMongodb(productID),
+  }).lean();
+};
+
 module.exports = {
   findAllDraftForShop,
   findAllPublishedForShop,
@@ -113,4 +119,5 @@ module.exports = {
   findAllProducts,
   findOneProduct,
   updateProductByID,
+  getProductByID,
 };

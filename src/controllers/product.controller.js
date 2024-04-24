@@ -48,7 +48,7 @@ class ProductController {
 
   // create product
   static async createProduct(req, res) {
-    new SuccessResponse({
+    new Created({
       message: "Create product success",
       metadata: await ProductService.createProduct(req.body.product_type, {
         ...req.body,
