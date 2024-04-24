@@ -1,7 +1,7 @@
 "use strict";
 
 const crypto = require("node:crypto");
-const APIKeyModel = require("../models/apiKey.model");
+const { APIKeyModel } = require("../models/apiKey.model");
 
 class ApiKeyService {
   static async findByID(key) {

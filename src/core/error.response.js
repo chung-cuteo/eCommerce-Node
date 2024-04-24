@@ -1,6 +1,6 @@
 "use strict";
 
-const { StatusCodes, ReasonPhrases } = require("./http.status.code");
+const { StatusCodes, ReasonPhrases } = require("../utils/http.status.code");
 
 class ErrorResponse extends Error {
   constructor(message, status) {
@@ -26,7 +26,6 @@ class BadRequestError extends ErrorResponse {
     super(message, statusCode);
   }
 }
-
 
 class AuthFailureError extends ErrorResponse {
   constructor(

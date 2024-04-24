@@ -10,6 +10,8 @@ router.get(
   "/search/:keySearch",
   asyncHandler(ProductController.findAllSearchProduct)
 );
+router.get("/getAll", asyncHandler(ProductController.findAllProducts));
+router.get("/:product_id", asyncHandler(ProductController.findOneProduct));
 
 // check authentication before below router here , new pass chuyen keyStore xuong cho router duoi
 router.use(authentication);
@@ -21,6 +23,7 @@ router.get(
   asyncHandler(ProductController.findAllPublishedForShop)
 );
 router.post("/create", asyncHandler(ProductController.createProduct));
+router.patch("/:productID", asyncHandler(ProductController.updateProduct));
 router.put(
   "/publish/:id",
   asyncHandler(ProductController.publishProductIDForShop)

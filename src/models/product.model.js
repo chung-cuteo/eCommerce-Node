@@ -5,13 +5,13 @@ const ObjectId = Schema.Types.ObjectId;
 const Mixed = Schema.Types.Mixed;
 
 const DOCUMENT_PRODUCT_NAME = "Product";
-const COLLECTION_PRODUCT_NAME = "Products";
+const COLLECTION_PRODUCT_NAME = "products";
 const DOCUMENT_ClOTHING_NAME = "Clothing";
-const COLLECTION_ClOTHING_NAME = "Clothings";
+const COLLECTION_ClOTHING_NAME = "clothings";
 const DOCUMENT_ELECTRONIC_NAME = "Electronic";
-const COLLECTION_ELECTRONIC_NAME = "Electronics";
+const COLLECTION_ELECTRONIC_NAME = "electronics";
 const DOCUMENT_FURNITURE_NAME = "Furniture";
-const COLLECTION_FURNITURE_NAME = "Furnitures";
+const COLLECTION_FURNITURE_NAME = "furnitures";
 
 const productSchema = new Schema(
   {

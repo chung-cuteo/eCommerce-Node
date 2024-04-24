@@ -3,7 +3,7 @@
 const { model, Schema } = require("mongoose");
 
 const DOCUMENT_NAME = "Apikey";
-const COLLECTION_NAME = "Apikeys";
+const COLLECTION_NAME = "apikeys";
 
 const apiKeySchema = new Schema(
   {
@@ -28,5 +28,6 @@ const apiKeySchema = new Schema(
   }
 );
 
-const APIKeyModel = model(DOCUMENT_NAME, apiKeySchema);
-module.exports = APIKeyModel;
+module.exports = {
+  APIKeyModel: model(DOCUMENT_NAME, apiKeySchema),
+};

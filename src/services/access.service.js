@@ -1,4 +1,4 @@
-const Shop = require("../models/shop.model");
+const { ShopModel } = require("../models/shop.model");
 const bcrypt = require("bcrypt");
 const KeyTokenService = require("./keyToken.service");
 const {
@@ -6,11 +6,7 @@ const {
   AuthFailureError,
   ForbiddenError,
 } = require("../core/error.response");
-const {
-  createTokenPair,
-  createCryptoKey,
-  verifyJWT,
-} = require("../auth/authUtils");
+const { createTokenPair, createCryptoKey } = require("../auth/authUtils");
 const { getInfoData } = require("../utils");
 const { findShopByEmail } = require("./shop.service");
 const { ROLES_SHOP } = require("../constant/index");
@@ -18,7 +14,8 @@ const { ROLES_SHOP } = require("../constant/index");
 class AccessService {
   static async refreshToken({ refreshToken, user, keyStore }) {
     const { userID, email } = user;
-    const isUsedRefreshToken = keyStore.refreshTokensUsed.includes(refreshToken);
+    const isUsedRefreshToken =
+      keyStore.refreshTokensUsed.includes(refreshToken);
 
     if (isUsedRefreshToken) {
       await KeyTokenService.deleteKeyByID(userID);
