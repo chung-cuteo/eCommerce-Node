@@ -4,6 +4,7 @@ const { BadRequestError } = require("../core/error.response");
 const { findCartByID } = require("../models/repositories/cart.repo");
 const { checkProductByServer } = require("../models/repositories/product.repo");
 const { getDiscountAmount } = require("../services/discount.service");
+const { acquireLock } = require("./redis.service");
 
 class CheckoutService {
   /* payload from FE
@@ -117,9 +118,11 @@ class CheckoutService {
     const products = shop_order_ids_new.flatMap((order) => order.item_products);
 
     console.log("1::", products);
+    const acquireProduct = [];
 
     for (let i = 0; i < products.length; i++) {
       const { productID, quantity } = products[i];
+      const keyLock = await acquireLock(productID, quantity, cartID);
     }
   }
 }
