@@ -5,19 +5,10 @@ const {
 } = require("../models/repositories/inventory.repo");
 const redis = require("redis");
 const { promisify } = require("util");
-const redisClient = redis.createClient();
+const client = redis.createClient();
 
-// Xử lý các sự kiện của Redis client
-client.on("connect", () => {
-  console.log("Connected to Redis");
-});
-
-client.on("error", (err) => {
-  console.log("Redis error: ", err);
-});
-
-const pexpire = promisify(redisClient.pexpire).bind(redisClient);
-const setnxAsync = promisify(redisClient.setEx).bind(redisClient);
+const pexpire = promisify(client.pexpire).bind(client);
+const setnxAsync = promisify(client.setEx).bind(client);
 
 const acquireLock = async (productID, quantity, cartID) => {
   const key = `lock_v2023_${productID}`;
@@ -47,7 +38,7 @@ const acquireLock = async (productID, quantity, cartID) => {
 };
 
 const releaseLock = async (keyLock) => {
-  const delAsyncKey = promisify(redisClient.del).bind(redisClient);
+  const delAsyncKey = promisify(client.del).bind(client);
   return await delAsyncKey(keyLock);
 };
 

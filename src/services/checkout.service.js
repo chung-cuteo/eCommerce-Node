@@ -1,10 +1,11 @@
 "use strict";
 
 const { BadRequestError } = require("../core/error.response");
+const { OrderModel } = require("../models/order.model");
 const { findCartByID } = require("../models/repositories/cart.repo");
 const { checkProductByServer } = require("../models/repositories/product.repo");
 const { getDiscountAmount } = require("../services/discount.service");
-const { acquireLock } = require("./redis.service");
+const { acquireLock, releaseLock } = require("./redis.service");
 
 class CheckoutService {
   /* payload from FE
@@ -103,6 +104,7 @@ class CheckoutService {
   static async orderByUser({
     shop_order_ids,
     userID,
+    cartID,
     user_address = {},
     user_payment = {},
   }) {
@@ -116,14 +118,58 @@ class CheckoutService {
     // check lai 1 lan nua xem qua luong ton kho hay khong ?
 
     const products = shop_order_ids_new.flatMap((order) => order.item_products);
-
-    console.log("1::", products);
     const acquireProduct = [];
-
     for (let i = 0; i < products.length; i++) {
       const { productID, quantity } = products[i];
       const keyLock = await acquireLock(productID, quantity, cartID);
+      acquireProduct.push(keyLock ? true : false);
+      if (keyLock) {
+        await releaseLock(keyLock);
+      }
     }
+
+    // check co 1 sp het hang trong ton kho
+    if (acquireProduct.includes(false)) {
+      throw new BadRequestError(
+        "mot so san pham da dk cap nhap, vui long quay lai gio hang"
+      );
+    }
+
+    // tao order
+    const newOrder = OrderModel.create({
+      order_userID: userID,
+      order_checkout: checkout_order,
+      order_shipping: user_address,
+      order_payment: user_payment,
+      order_products: shop_order_ids_new,
+    });
+
+    // truong hop tao thanh cong thi remove product trong cart
+    if (newOrder) {
+      //
+    }
+
+    return newOrder;
+  }
+
+  // query order { all users}
+  static async getOrderByUser() {
+    //
+  }
+
+  // query order { user}
+  static async getOneOrderByUser() {
+    //
+  }
+
+  // cancel order { user}
+  static async cancelOrderByUser() {
+    //
+  }
+
+  //update order { shop}
+  static async updateOrderStatusByShop() {
+    //
   }
 }
 
