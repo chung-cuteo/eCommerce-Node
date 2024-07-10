@@ -64,11 +64,12 @@ const authentication = asyncHandler(async (req, res, next) => {
 
   if (!userID) throw new AuthFailureError("Invalid Request");
   const keyStore = await findByUserID(userID);
+
   if (!keyStore) throw new NotFoundError("Not found keyStore");
 
   // check refresh token when match router refresh token
 
-  if (refreshToken && req.path==="/shop/refreshToken") {
+  if (refreshToken && req.path === "/shop/refreshToken") {
     try {
       const decodeUser = verifyJWT(refreshToken, keyStore.publicKey);
       if (decodeUser.userID !== userID) {

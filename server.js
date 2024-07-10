@@ -1,10 +1,7 @@
 const app = require("./src/app");
-const {
-  app: { port },
-} = require("./src/configs/config.app");
 
-const server = app.listen(port, () => {
-  console.log(`running eCommerce with ${port}`);
+const server = app.listen(process.env.APP_PORT, () => {
+  console.log(`running eCommerce -- with ${process.env.APP_PORT}`);
 });
 
 // process.on("SIGINT", () => {

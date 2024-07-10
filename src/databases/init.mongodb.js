@@ -2,19 +2,14 @@
 
 const mongoose = require("mongoose");
 const { countConnect } = require("../helpers/check.connect");
-const {db: {host, port, name}} = require('../configs/config.app')
- 
 class Database {
   constructor() {
     this.connect();
   }
 
-
   connect(type = "mongodb") {
-    const connectString = `mongodb://${host}:${port}/${name}`;
-
     mongoose
-      .connect(connectString, {
+      .connect(process.env.MONGO_URI, {
         maxPoolSize: 50,
       })
       .then(() => {
@@ -24,11 +19,6 @@ class Database {
       .catch((error) => {
         console.error("Connection to MongoDB failed:", error);
       });
-
-    if (1 === 1) {
-      mongoose.set("debug", true);
-      mongoose.set("debug", { color: true });
-    }
   }
 
   static getInstance() {

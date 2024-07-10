@@ -1,3 +1,9 @@
-Back end  eCommere with Node + mogoDB
+Back end eCommere with Node + mogoDB
 
-node -v 20.6.1
+run with docker (node + redis + mongodb)
+
+start app with cmd
+docker-compose --env-file .env up --build -d
+
+update code with cmd
+docker-compose --env-file .env up -d

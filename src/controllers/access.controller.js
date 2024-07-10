@@ -9,7 +9,7 @@ class AccessController {
       metadata: await AccessService.refreshToken({
         refreshToken: req.refreshToken,
         user: req.user,
-        keyStore: req.keyStore
+        keyStore: req.keyStore,
       }),
     }).send(res);
   }
