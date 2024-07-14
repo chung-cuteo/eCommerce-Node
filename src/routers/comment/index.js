@@ -11,5 +11,6 @@ router.use(authentication);
 //
 
 router.post("", asyncHandler(CommentController.createComment));
+router.get("", asyncHandler(CommentController.getCommentByParentId));
 
 module.exports = router;
