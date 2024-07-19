@@ -1,5 +1,5 @@
 # Use an official Node.js runtime as a parent image
-FROM node:latest
+FROM node:22-slim
 
 RUN mkdir -p /usr/src/ecommerce-app
 

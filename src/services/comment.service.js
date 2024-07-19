@@ -2,6 +2,7 @@
 
 const { NotFoundError } = require("../core/error.response");
 const { CommentModel } = require("../models/comment.model");
+const { findOneProduct } = require("../models/repositories/product.repo");
 const { convertToObjectIDMongodb } = require("../utils");
 
 /*
@@ -42,7 +43,16 @@ class CommentService {
           comment_right: { $gte: rightValue },
         },
         {
-          $inc: { comment_right: 2, comment_left: 2 },
+          $inc: { comment_right: 2 },
+        }
+      );
+      await CommentModel.updateMany(
+        {
+          comment_productId: convertToObjectIDMongodb(productId),
+          comment_left: { $gt: rightValue },
+        },
+        {
+          $inc: { comment_left: 2 },
         }
       );
     } else {
@@ -98,6 +108,56 @@ class CommentService {
     });
 
     return comments;
+  }
+
+  static async deleteComments({ commentId, productId }) {
+    //1 check product exist
+    const foundProduct = await findOneProduct({
+      product_id: productId,
+    });
+
+    if (!foundProduct) throw new NotFoundError("Product not found");
+
+    //2 xac dinh gia tri left vs right of comment ID
+    const comment = await CommentModel.findById(commentId);
+    if (!comment) throw new NotFoundError("Comments not found");
+
+    const leftValue = comment.comment_left;
+    const rightValue = comment.comment_right;
+
+    //3 tinh chieu rong with
+    const widthValue = rightValue - leftValue + 1;
+
+    //4 xoa comments
+    await CommentModel.deleteMany({
+      comment_productId: convertToObjectIDMongodb(productId),
+      comment_left: { $gte: leftValue, $lt: rightValue },
+    });
+
+    // 5 cap nhap comment
+    // update ben phai
+    await CommentModel.updateMany(
+      {
+        comment_productId: productId,
+        comment_right: { $gte: rightValue },
+      },
+      {
+        $inc: { comment_right: -widthValue },
+      }
+    );
+
+    // update ben trai
+    await CommentModel.updateMany(
+      {
+        comment_productId: productId,
+        comment_left: { $gt: rightValue },
+      },
+      {
+        $inc: { comment_left: -widthValue },
+      }
+    );
+
+    return true;
   }
 }
 

@@ -66,7 +66,6 @@ const authentication = asyncHandler(async (req, res, next) => {
   const keyStore = await findByUserID(userID);
 
   if (!keyStore) throw new NotFoundError("Not found keyStore");
-
   // check refresh token when match router refresh token
 
   if (refreshToken && req.path === "/shop/refreshToken") {
