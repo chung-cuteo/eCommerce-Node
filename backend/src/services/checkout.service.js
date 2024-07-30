@@ -4,7 +4,7 @@ const { BadRequestError } = require("../core/error.response");
 const { OrderModel } = require("../models/order.model");
 const { findCartByID } = require("../models/repositories/cart.repo");
 const { checkProductByServer } = require("../models/repositories/product.repo");
-const { getDiscountAmount } = require("../services/discount.service");
+const { getDiscountAmount } = require("./discount.service");
 const { acquireLock, releaseLock } = require("./redis.service");
 
 class CheckoutService {
